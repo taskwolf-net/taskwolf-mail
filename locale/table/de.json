@@ -1,0 +1,18 @@
+{
+  "mail.link.description": "Möchten Sie eine weitere Mail hinzufügen, um sie mit Hilfe von Dulno in Ihre Automatisierung zu integrieren? Klicken Sie einfach auf das Logo.",
+
+  "mail.action.send.name": "E-Mail senden",
+  "mail.action.send.description": "Sendet eine von Ihnen zusammengestellte E-Mail an einen Empfänger",
+  "mail.action.send.input.mail.name": "E-Mail",
+  "mail.action.send.input.mail.description": "Die E-Mail, von der die Nachricht gesendet werden soll",
+  "mail.action.send.input.prefix.name": "Präfix",
+  "mail.action.send.input.prefix.description": "Das Präfix, das dem Empfänger vor der Domäne angezeigt wird. Der Empfänger sieht dann den Absender als prefix@domain.com, zum Beispiel",
+  "mail.action.send.input.prefix.placeholder": "support, contact, sales, noreply, ...",
+  "mail.action.send.input.receiver.name": "Empfänger",
+  "mail.action.send.input.receiver.description": "Die E-Mail Adresse des Empfängers",
+  "mail.action.send.input.receiver.placeholder": "customer@gmail.com",
+  "mail.action.send.input.title.name": "E-Mail-Titel",
+  "mail.action.send.input.title.description": "Der Titel der E-Mail, der dem Empfänger angezeigt wird",
+  "mail.action.send.input.body.name": "E-Mail-Körper",
+  "mail.action.send.input.body.description": "Der Inhalt der E-Mail, die Sie an den Empfänger senden möchten"
+}
