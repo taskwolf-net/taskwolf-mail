@@ -50,7 +50,9 @@ public class MailController extends DulnoRestController {
         .thenCompose(target -> findMailOwner(user, target)
           .thenCompose(owner -> mailDatabaseTable.mailExists(owner, domain)
             .thenCompose(mailExists -> addMail(owner, domain,
-              body.getInt("smtpPort"), body.getInt("imapPort"), mailExists)))));
+              body.getString("mailUser"), body.getString("mailPassword"),
+              body.getString("smtpHost"), body.getInt("smtpPort"),
+              body.getString("imapHost"), body.getInt("imapPort"), mailExists)))));
   }
 
   private CompletableFuture<UUID> findMailOwner(User user, UUID target) {
@@ -61,13 +63,16 @@ public class MailController extends DulnoRestController {
   }
 
   private CompletableFuture<Map<String, Object>> addMail(
-    UUID ownerId, String domain, int smtpPort, int imapPort, boolean mailExists
+    UUID ownerId, String domain, String mailUser, String mailPassword,
+    String smtpHost, int smtpPort, String imapHost, int imapPort,
+    boolean mailExists
   ) {
     if (mailExists) {
       return CompletableFuture.completedFuture(Map.of("success", false));
     }
     return mailDatabaseTable.generateAvailableMailId().thenCompose(id ->
-      mailDatabaseTable.insertMail(id, ownerId, domain, smtpPort, imapPort)
+      mailDatabaseTable.insertMail(id, ownerId, domain, mailUser, mailPassword,
+        smtpHost, smtpPort, imapHost, imapPort)
         .thenApply(value -> Map.of("success", true)));
   }
 }

@@ -20,7 +20,11 @@ public final class MailDatabaseTable extends DatabaseTable {
       DatabaseColumn.Type.PRIMARY_KEY));
     columns.add(DatabaseColumn.create("owner", DatabaseDataType.UUID));
     columns.add(DatabaseColumn.create("domain", DatabaseDataType.TEXT));
+    columns.add(DatabaseColumn.create("mailUser", DatabaseDataType.TEXT));
+    columns.add(DatabaseColumn.create("mailPassword", DatabaseDataType.TEXT));
+    columns.add(DatabaseColumn.create("smtpHost", DatabaseDataType.TEXT));
     columns.add(DatabaseColumn.create("smtpPort", DatabaseDataType.INT));
+    columns.add(DatabaseColumn.create("imapHost", DatabaseDataType.TEXT));
     columns.add(DatabaseColumn.create("imapPort", DatabaseDataType.INT));
     return new MailDatabaseTable(connection, keyspace, TABLE_NAME, columns);
   }
@@ -33,14 +37,17 @@ public final class MailDatabaseTable extends DatabaseTable {
   }
 
   public CompletableFuture<Void> insertMail(MailEntry mail) {
-    return insertMail(mail.id(), mail.ownerId(), mail.domain(), mail.smtpPort(),
+    return insertMail(mail.id(), mail.ownerId(), mail.domain(), mail.mailUser(),
+      mail.mailPassword(), mail.smtpHost(), mail.smtpPort(), mail.imapHost(),
       mail.imapPort());
   }
 
   public CompletableFuture<Void> insertMail(
-    UUID id, UUID ownerId, String domain, int smtpPort, int imapPort
+    UUID id, UUID ownerId, String domain, String mailUser, String mailPassword,
+    String smtpHost, int smtpPort, String imapHost, int imapPort
   ) {
-    return insert(DatabaseRow.of(id, ownerId, domain, smtpPort, imapPort));
+    return insert(DatabaseRow.of(id, ownerId, domain, mailUser, mailPassword,
+      smtpHost, smtpPort, imapHost, imapPort));
   }
 
   public CompletableFuture<UUID> generateAvailableMailId() {
