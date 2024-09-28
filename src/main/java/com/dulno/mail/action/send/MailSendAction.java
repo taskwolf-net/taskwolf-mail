@@ -19,22 +19,23 @@ import java.util.concurrent.CompletableFuture;
 @AllArgsConstructor(staticName = "create")
 public final class MailSendAction implements Action<MailSendActionExecutor> {
   public static MailSendAction create(
-    InputComponentSelect tableComponentSelect,
+    InputComponentSelect mailComponentSelect,
     MailDatabaseTable mailDatabaseTable,
     DatabaseConnection databaseConnection, DatabaseKeyspace databaseKeyspace
   ) {
     var contentColumns = Lists.<DatabaseColumn>newArrayList();
     contentColumns.add(DatabaseColumn.create("mailId", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("mailPrefix", DatabaseDataType.TEXT));
+    contentColumns.add(DatabaseColumn.create("mailName", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("mailReceiver", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("mailTitle", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("mailBody", DatabaseDataType.TEXT));
-    return new MailSendAction(tableComponentSelect, mailDatabaseTable,
+    return new MailSendAction(mailComponentSelect, mailDatabaseTable,
       ActionContentDatabaseTable.create(databaseConnection, databaseKeyspace,
         "action_mail_send", contentColumns));
   }
 
-  private final InputComponentSelect tableComponentSelect;
+  private final InputComponentSelect mailComponentSelect;
   private final MailDatabaseTable mailDatabaseTable;
   private final ActionContentDatabaseTable contentDatabaseTable;
 
@@ -49,10 +50,13 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
       .withName("mail.action.send.name")
       .withDescription("mail.action.send.description")
       .withInputVariable(InputComponentVariable.createSelect("mail.action.send.input.mail.name",
-        "mailIdentifier", "mail.action.send.input.mail.description", tableComponentSelect))
+        "mailIdentifier", "mail.action.send.input.mail.description", mailComponentSelect))
       .withInputVariable(InputComponentVariable.createRequired("mail.action.send.input.prefix.name",
         "mailPrefix", "mail.action.send.input.prefix.description",
         "mail.action.send.input.prefix.placeholder", InputComponentDataType.TEXT))
+      .withInputVariable(InputComponentVariable.createRequired("mail.action.send.input.name.name",
+        "mailName", "mail.action.send.input.name.description",
+        "mail.action.send.input.name.placeholder", InputComponentDataType.TEXT))
       .withInputVariable(InputComponentVariable.createRequired("mail.action.send.input.receiver.name",
         "mailReceiver", "mail.action.send.input.receiver.description",
         "mail.action.send.input.receiver.placeholder", InputComponentDataType.TEXT))
@@ -77,8 +81,8 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
   public CompletableFuture<Void> insert(UUID actionId, Map<String, Object> content) {
     return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(
       content.get("mailIdentifier"), content.get("mailPrefix"),
-      content.get("mailReceiver"), content.get("mailTitle"),
-      content.get("mailBody")));
+      content.get("mailName"), content.get("mailReceiver"),
+      content.get("mailTitle"), content.get("mailBody")));
   }
 
   @Override
@@ -86,9 +90,10 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
     return contentDatabaseTable.findContent(triggerId).thenApply(row ->
       Map.of("mailIdentifier", row.findCell(1).uuidValue(),
         "mailPrefix", row.findCell(2).stringValue(),
-        "mailReceiver", row.findCell(3).stringValue(),
-        "mailTitle", row.findCell(4).stringValue(),
-        "mailBody", row.findCell(5).stringValue()));
+        "mailName", row.findCell(3).stringValue(),
+        "mailReceiver", row.findCell(4).stringValue(),
+        "mailTitle", row.findCell(5).stringValue(),
+        "mailBody", row.findCell(6).stringValue()));
   }
 
   @Override
@@ -97,7 +102,7 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
       .thenApply(content -> MailSendActionExecutor.create(mailDatabaseTable,
         content.findCell(1).uuidValue(), content.findCell(2).stringValue(),
         content.findCell(3).stringValue(), content.findCell(4).stringValue(),
-        content.findCell(5).stringValue()));
+        content.findCell(5).stringValue(), content.findCell(6).stringValue()));
   }
 
   @Override
