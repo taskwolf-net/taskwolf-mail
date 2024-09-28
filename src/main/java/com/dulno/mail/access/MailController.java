@@ -8,6 +8,7 @@ import com.dulno.core.user.User;
 import com.dulno.core.user.UserDatabaseTable;
 import com.dulno.core.user.UserTargetDatabaseTable;
 import com.dulno.mail.structure.MailDatabaseTable;
+import com.dulno.mail.structure.MailEntry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.mail.Flags;
+import javax.mail.Folder;
+import javax.mail.Session;
 import java.security.Key;
 import java.util.Map;
 import java.util.UUID;
@@ -70,9 +74,43 @@ public class MailController extends DulnoRestController {
     if (mailExists) {
       return CompletableFuture.completedFuture(Map.of("success", false));
     }
-    return mailDatabaseTable.generateAvailableMailId().thenCompose(id ->
-      mailDatabaseTable.insertMail(id, ownerId, domain, mailUser, mailPassword,
-        smtpHost, smtpPort, imapHost, imapPort)
+    return mailDatabaseTable.generateAvailableMailId()
+      .thenApply(id -> MailEntry.create(id, ownerId, domain, mailUser,
+        mailPassword, smtpHost, smtpPort, imapHost, imapPort))
+      .thenCompose(mail -> mailDatabaseTable.insertMail(mail)
+        .thenAcceptAsync(value -> setupMail(mail))
         .thenApply(value -> Map.of("success", true)));
+  }
+
+  private static final Flags RECEIVE_FLAG = new Flags("DULNO-RECEIVE");
+
+  private void setupMail(MailEntry mail) {
+    try {
+      var session = createSession("imap", mail.imapHost(), mail.imapPort());
+      var store = session.getStore("imap");
+      store.connect(mail.imapHost(), mail.mailUser(), mail.mailPassword());
+      var folder = store.getFolder("INBOX");
+      folder.open(Folder.READ_WRITE);
+      var entries = folder.getMessages();
+      for (var entry : entries) {
+        entry.setFlags(RECEIVE_FLAG, true);
+      }
+      folder.close(true);
+      store.close();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+  }
+
+  private Session createSession(String protocol, String host, int port) {
+    var properties = System.getProperties();
+    properties.put("mail." + protocol + ".host", host);
+    properties.put("mail." + protocol + ".port", port);
+    properties.put("mail." + protocol + ".starttls.enable", "true");
+    properties.put("mail." + protocol + ".socketFactory.class",
+      "javax.net.ssl.SSLSocketFactory");
+    var session = Session.getDefaultInstance(properties, null);
+    session.setDebug(false);
+    return session;
   }
 }
