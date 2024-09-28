@@ -1,11 +1,13 @@
 package com.dulno.mail;
 
+import com.dulno.core.CoreModule;
 import com.dulno.core.database.DatabaseConnection;
 import com.dulno.core.database.DatabaseKeyspace;
 import com.dulno.mail.action.delete.MailDeleteAction;
 import com.dulno.mail.action.send.MailSendAction;
 import com.dulno.mail.select.MailComponentSelect;
 import com.dulno.mail.structure.MailDatabaseTable;
+import com.dulno.mail.trigger.MailCheckSchedule;
 import com.dulno.mail.trigger.receive.MailReceiveTrigger;
 import com.google.common.collect.Lists;
 import com.google.inject.Injector;
@@ -28,6 +30,7 @@ public final class MailModule extends Module {
   private MailContextInitializer contextInitializer;
   private AccountLink accountLink;
   private InputComponentSelect mailComponentSelect;
+  private MailCheckSchedule mailCheckSchedule;
 
   public MailModule(Injector injector) {
     super(injector.createChildInjector(MailInjectionModule.create()));
@@ -42,10 +45,18 @@ public final class MailModule extends Module {
     springApplication.addInitializers(contextInitializer);
     accountLink = MailAccountLink.create(mailDatabaseTable);
     mailComponentSelect = MailComponentSelect.create(mailDatabaseTable);
+    startMailCheckSchedule(mailDatabaseTable);
+  }
+
+  private void startMailCheckSchedule(MailDatabaseTable mailDatabaseTable) {
+    mailCheckSchedule = MailCheckSchedule.create(
+      injector().getInstance(CoreModule.class), mailDatabaseTable);
+    mailCheckSchedule.start();
   }
 
   @Override
   public void disable() {
+    mailCheckSchedule.stop();
     var initializers = Lists.newArrayList(springApplication.getInitializers());
     initializers.remove(contextInitializer);
     springApplication.setInitializers(initializers);
