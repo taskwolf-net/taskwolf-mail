@@ -43,7 +43,7 @@ public final class MailSendActionExecutor implements ActionExecutor {
     if (!mailExists) {
       return ActionResult.futureFailure("mail.action.send.failure.mail.not.found");
     }
-    return mailDatabaseTable.findMail(mailId).thenApply(this::execute);
+    return mailDatabaseTable.findMail(mailId).thenApplyAsync(this::execute);
   }
 
   private ActionResult execute(MailEntry mail) {
@@ -55,10 +55,11 @@ public final class MailSendActionExecutor implements ActionExecutor {
       transport.connect(mail.smtpHost(), mail.mailUser(), mail.mailPassword());
       transport.sendMessage(message, message.getAllRecipients());
       transport.close();
+      return ActionResult.success(buildInformation(mail, message.getMessageID()));
     } catch (Exception exception) {
       exception.printStackTrace();
+      return ActionResult.failure("mail.action.send.failure.mail.exception");
     }
-    return ActionResult.success(buildInformation(mail, ""));
   }
 
   private InternetAddress createAddress(String email) {
