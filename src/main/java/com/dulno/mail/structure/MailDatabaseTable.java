@@ -67,8 +67,15 @@ public final class MailDatabaseTable extends DatabaseTable {
     return exists(id);
   }
 
+  public CompletableFuture<Boolean> mailExistsByOwner(UUID ownerId) {
+    var condition = DatabaseCondition.of(
+      DatabaseComparison.create("owner", ownerId));
+    return exists(condition);
+  }
+
   public CompletableFuture<Boolean> mailExists(UUID ownerId, String domain) {
-    return exists(DatabaseCondition.of(DatabaseComparison.create("owner", ownerId),
+    return exists(DatabaseCondition.of(DatabaseCondition.Filtering.ALLOWED,
+      DatabaseComparison.create("owner", ownerId),
       DatabaseComparison.create("domain", domain)));
   }
 

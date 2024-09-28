@@ -14,7 +14,7 @@ public final class MailAccountLink implements AccountLink {
 
   @Override
   public CompletableFuture<Boolean> accountExists(UUID id) {
-    return mailDatabaseTable.mailExists(id);
+    return mailDatabaseTable.mailExistsByOwner(id);
   }
 
   @Override
