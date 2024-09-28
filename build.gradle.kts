@@ -65,6 +65,8 @@ dependencies {
   compileOnly("commons-io:commons-io:2.16.1")
 
   compileOnly("org.springframework.boot:spring-boot-starter-web:3.2.5")
+
+  implementation("com.sun.mail:javax.mail:1.6.2")
 }
 
 tasks.test {
