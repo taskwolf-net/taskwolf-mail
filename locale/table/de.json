@@ -1,6 +1,15 @@
 {
   "mail.link.description": "Möchten Sie eine weitere Mail hinzufügen, um sie mit Hilfe von Dulno in Ihre Automatisierung zu integrieren? Klicken Sie einfach auf das Logo.",
 
+  "mail.trigger.receive.name": "E-Mail Empfangen",
+  "mail.trigger.receive.description": "Wird ausgelöst, wenn Sie eine neue E-Mail erhalten",
+  "mail.trigger.receive.input.mail.name": "E-Mail",
+  "mail.trigger.receive.input.mail.description": "Die E-Mail, deren Posteingang auf neue E-Mails überprüft werden soll",
+  "mail.trigger.receive.output.sender": "Sender",
+  "mail.trigger.receive.output.prefix": "Präfix",
+  "mail.trigger.receive.output.title": "E-Mail-Titel",
+  "mail.trigger.receive.output.body": "E-Mail-Körper",
+
   "mail.action.send.name": "E-Mail senden",
   "mail.action.send.description": "Sendet eine von Ihnen zusammengestellte E-Mail an einen Empfänger",
   "mail.action.send.input.mail.name": "E-Mail",
@@ -8,11 +17,27 @@
   "mail.action.send.input.prefix.name": "Präfix",
   "mail.action.send.input.prefix.description": "Das Präfix, das dem Empfänger vor der Domäne angezeigt wird. Der Empfänger sieht dann den Absender als prefix@domain.com, zum Beispiel",
   "mail.action.send.input.prefix.placeholder": "support, contact, sales, noreply, ...",
+  "mail.action.send.input.name.name": "Name",
+  "mail.action.send.input.name.description": "Der Name, der dem Empfänger als Absender angezeigt wird",
+  "mail.action.send.input.name.placeholder": "Ihr Firmenname",
   "mail.action.send.input.receiver.name": "Empfänger",
   "mail.action.send.input.receiver.description": "Die E-Mail Adresse des Empfängers",
   "mail.action.send.input.receiver.placeholder": "customer@gmail.com",
   "mail.action.send.input.title.name": "E-Mail-Titel",
   "mail.action.send.input.title.description": "Der Titel der E-Mail, der dem Empfänger angezeigt wird",
   "mail.action.send.input.body.name": "E-Mail-Körper",
-  "mail.action.send.input.body.description": "Der Inhalt der E-Mail, die Sie an den Empfänger senden möchten"
+  "mail.action.send.input.body.description": "Der Inhalt der E-Mail, die Sie an den Empfänger senden möchten",
+  "mail.action.send.output.identifier": "Eintrags-ID",
+  "mail.action.send.output.sender": "Sender",
+  "mail.action.send.output.receiver": "Empfänger",
+  "mail.action.send.output.title": "E-Mail-Titel",
+  "mail.action.send.output.body": "E-Mail-Körper",
+
+  "mail.action.delete.name": "E-Mail löschen",
+  "mail.action.delete.description": "Löscht eine E-Mail aus dem Posteingang",
+  "mail.action.delete.input.mail.name": "E-Mail",
+  "mail.action.delete.input.mail.description": "Die E-Mail, aus der der Eintrag gelöscht werden soll",
+  "mail.action.delete.input.entry.name": "Eintrags-ID",
+  "mail.action.delete.input.entry.description": "Die ID des E-Mail-Eintrags aus dem Posteingang, der gelöscht werden soll",
+  "mail.action.delete.output.identifier": "Eintrags-ID"
 }

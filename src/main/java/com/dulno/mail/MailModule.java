@@ -2,9 +2,11 @@ package com.dulno.mail;
 
 import com.dulno.core.database.DatabaseConnection;
 import com.dulno.core.database.DatabaseKeyspace;
+import com.dulno.mail.action.delete.MailDeleteAction;
 import com.dulno.mail.action.send.MailSendAction;
 import com.dulno.mail.select.MailComponentSelect;
 import com.dulno.mail.structure.MailDatabaseTable;
+import com.dulno.mail.trigger.receive.MailReceiveTrigger;
 import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import com.dulno.core.account.AccountLink;
@@ -56,7 +58,7 @@ public final class MailModule extends Module {
 
   @Override
   public ModuleInformation moduleInformation() {
-    return ModuleInformation.create("Mail", "", "mail.png",
+    return ModuleInformation.create("Mail", "", "mail",
       ModuleInformation.Type.PUBLIC);
   }
 
@@ -65,6 +67,8 @@ public final class MailModule extends Module {
     var databaseConnection = injector().getInstance(DatabaseConnection.class);
     var databaseKeyspace = injector().getInstance(DatabaseKeyspace.class);
     var repository = TriggerRepository.create();
+    repository.registerTrigger(MailReceiveTrigger.create(mailComponentSelect,
+      databaseConnection, databaseKeyspace));
     return repository;
   }
 
@@ -76,6 +80,8 @@ public final class MailModule extends Module {
     var mailDatabaseTable = injector().getInstance(MailDatabaseTable.class);
     var repository = ActionRepository.create();
     repository.registerAction(MailSendAction.create(mailComponentSelect,
+      mailDatabaseTable, databaseConnection, databaseKeyspace));
+    repository.registerAction(MailDeleteAction.create(mailComponentSelect,
       mailDatabaseTable, databaseConnection, databaseKeyspace));
     return repository;
   }

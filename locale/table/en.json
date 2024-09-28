@@ -1,6 +1,15 @@
 {
   "mail.link.description": "Would you like to add another mail to integrate it into your automation with the help of Dulno? Just click on the logo.",
 
+  "mail.trigger.receive.name": "Email Receive",
+  "mail.trigger.receive.description": "Is triggered when you receive a new email",
+  "mail.trigger.receive.input.mail.name": "Email",
+  "mail.trigger.receive.input.mail.description": "The email whose mailbox is to be checked for new emails",
+  "mail.trigger.receive.output.sender": "Sender",
+  "mail.trigger.receive.output.prefix": "Prefix",
+  "mail.trigger.receive.output.title": "Email title",
+  "mail.trigger.receive.output.body": "Email body",
+
   "mail.action.send.name": "Send email",
   "mail.action.send.description": "Sends an email you have compiled to a recipient",
   "mail.action.send.input.mail.name": "Email",
@@ -8,11 +17,27 @@
   "mail.action.send.input.prefix.name": "Prefix",
   "mail.action.send.input.prefix.description": "The prefix that is displayed to the recipient before the domain. The recipient then sees the sender as prefix@domain.com, for example",
   "mail.action.send.input.prefix.placeholder": "support, contact, sales, noreply, ...",
+  "mail.action.send.input.name.name": "Name",
+  "mail.action.send.input.name.description": "The name that is displayed to the recipient as the sender",
+  "mail.action.send.input.name.placeholder": "Your company name",
   "mail.action.send.input.receiver.name": "Receiver",
   "mail.action.send.input.receiver.description": "The email address of the recipient",
   "mail.action.send.input.receiver.placeholder": "customer@gmail.com",
   "mail.action.send.input.title.name": "Email title",
   "mail.action.send.input.title.description": "The title of the email that is displayed to the recipient",
   "mail.action.send.input.body.name": "Email body",
-  "mail.action.send.input.body.description": "The content of the email you want to send to the recipient"
+  "mail.action.send.input.body.description": "The content of the email you want to send to the recipient",
+  "mail.action.send.output.identifier": "Entry ID",
+  "mail.action.send.output.sender": "Sender",
+  "mail.action.send.output.receiver": "Receiver",
+  "mail.action.send.output.title": "Email title",
+  "mail.action.send.output.body": "Email body",
+
+  "mail.action.delete.name": "Delete email",
+  "mail.action.delete.description": "Deletes an email from the inbox",
+  "mail.action.delete.input.mail.name": "Email",
+  "mail.action.delete.input.mail.description": "The email from which the entry is to be deleted",
+  "mail.action.delete.input.entry.name": "Entry ID",
+  "mail.action.delete.input.entry.description": "The ID of the email entry from the inbox that is to be deleted",
+  "mail.action.delete.output.identifier": "Entry ID"
 }
