@@ -9,6 +9,7 @@ import com.dulno.mail.select.MailComponentSelect;
 import com.dulno.mail.structure.MailDatabaseTable;
 import com.dulno.mail.trigger.MailCheckSchedule;
 import com.dulno.mail.trigger.receive.MailReceiveTrigger;
+import com.dulno.mail.trigger.sent.MailSentTrigger;
 import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import com.dulno.core.account.AccountLink;
@@ -79,6 +80,8 @@ public final class MailModule extends Module {
     var databaseKeyspace = injector().getInstance(DatabaseKeyspace.class);
     var repository = TriggerRepository.create();
     repository.registerTrigger(MailReceiveTrigger.create(mailComponentSelect,
+      databaseConnection, databaseKeyspace));
+    repository.registerTrigger(MailSentTrigger.create(mailComponentSelect,
       databaseConnection, databaseKeyspace));
     return repository;
   }

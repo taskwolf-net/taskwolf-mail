@@ -35,15 +35,18 @@ public final class MailCheckSchedule {
 
   private void execute() {
     coreModule.findAllTriggerEntries("mail", "mail-receive-trigger")
-      .thenAccept(receiveEntries -> assignTriggersToMails(receiveEntries)
-        .thenAccept(this::readInboxes));
+      .thenAccept(receiveEntries ->
+        coreModule.findAllTriggerEntries("mail", "mail-sent-trigger")
+          .thenAccept(sentEntries -> assignTriggersToMails(receiveEntries, sentEntries)
+            .thenAccept(this::readInboxes)));
   }
 
   private CompletableFuture<Multimap<UUID, TriggerEntry>> assignTriggersToMails(
-    List<TriggerEntry> receiveEntries
+    List<TriggerEntry> receiveEntries, List<TriggerEntry> sentEntries
   ) {
     var entries = Lists.<TriggerEntry>newArrayList();
     entries.addAll(receiveEntries);
+    entries.addAll(sentEntries);
     var futureResponse = new CompletableFuture<Multimap<UUID, TriggerEntry>>();
     var result = HashMultimap.<UUID, TriggerEntry>create();
     AsyncIterator.execute(entries,
@@ -60,21 +63,24 @@ public final class MailCheckSchedule {
     for (var mailId : entries.keySet()) {
       var mailTriggers = entries.get(mailId);
       mailDatabaseTable.findMail(mailId)
-        .thenApplyAsync(this::readMailInbox)
+        .thenApplyAsync(this::openMailConnection)
         .thenAcceptAsync(result -> processMailTriggers(result.getKey(),
-          result.getValue(), findReceivedMails(result.getValue()),
-          Lists.newArrayList(mailTriggers)));
+          result.getValue(), findReceivedMails(result.getValue()[0]),
+          findSentMails(result.getValue()[1]), Lists.newArrayList(mailTriggers)));
     }
   }
 
-  private Map.Entry<Store, Folder> readMailInbox(MailEntry mail) {
+  private Map.Entry<Store, Folder[]> openMailConnection(MailEntry mail) {
     try {
       var session = createSession("imap", mail.imapHost(), mail.imapPort());
       var store = session.getStore("imap");
       store.connect(mail.imapHost(), mail.mailUser(), mail.mailPassword());
-      var folder = store.getFolder("INBOX");
-      folder.open(Folder.READ_WRITE);
-      return new AbstractMap.SimpleEntry<>(store, folder);
+      var inboxFolder = store.getFolder("INBOX");
+      inboxFolder.open(Folder.READ_WRITE);
+      var sentFolder = store.getFolder("Sent");
+      sentFolder.open(Folder.READ_WRITE);
+      return new AbstractMap.SimpleEntry<>(store, new Folder[] {inboxFolder,
+        sentFolder});
     } catch (Exception exception) {
       exception.printStackTrace();
       return null;
@@ -95,9 +101,9 @@ public final class MailCheckSchedule {
 
   private static final Flags RECEIVE_FLAG = new Flags("DULNO-RECEIVE");
 
-  private List<Message> findReceivedMails(Folder folder) {
+  private List<Message> findReceivedMails(Folder inboxFolder) {
     try {
-      var receivedMails = folder.search(new FlagTerm(RECEIVE_FLAG, false));
+      var receivedMails = inboxFolder.search(new FlagTerm(RECEIVE_FLAG, false));
       for (var mail : receivedMails) {
         mail.setFlags(RECEIVE_FLAG, true);
       }
@@ -108,18 +114,35 @@ public final class MailCheckSchedule {
     }
   }
 
-  private void processMailTriggers(
-    Store store, Folder folder, List<Message> receivedMails,
-    List<TriggerEntry> triggers
-  ) {
-    AsyncIterator.execute(triggers, trigger ->
-        processMailTrigger(trigger, receivedMails))
-      .thenAccept(value -> closeMailSession(store, folder));
+  private static final Flags SENT_FLAG = new Flags("DULNO-SENT");
+
+  private List<Message> findSentMails(Folder sentFolder) {
+    try {
+      var sentMails = sentFolder.search(new FlagTerm(SENT_FLAG, false));
+      for (var mail : sentMails) {
+        mail.setFlags(SENT_FLAG, true);
+      }
+      return Arrays.stream(sentMails).toList();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      return Lists.newArrayList();
+    }
   }
 
-  private void closeMailSession(Store store, Folder folder) {
+  private void processMailTriggers(
+    Store store, Folder[] folders, List<Message> receivedMails,
+    List<Message> sentMails, List<TriggerEntry> triggers
+  ) {
+    AsyncIterator.execute(triggers, trigger ->
+        processMailTrigger(trigger, receivedMails, sentMails))
+      .thenAccept(value -> closeMailSession(store, folders));
+  }
+
+  private void closeMailSession(Store store, Folder[] folders) {
     try {
-      folder.close(true);
+      for (var folder : folders) {
+        folder.close(true);
+      }
       store.close();
     } catch (Exception exception) {
       exception.printStackTrace();
@@ -127,23 +150,26 @@ public final class MailCheckSchedule {
   }
 
   private CompletableFuture<Void> processMailTrigger(
-    TriggerEntry entry, List<Message> receivedMails
+    TriggerEntry entry, List<Message> receivedMails, List<Message> sentMails
   ) {
     if (entry.type().equals("mail-receive-trigger")) {
       return AsyncIterator.execute(receivedMails, mail ->
-        executeMailReceiveTrigger(entry.id(), mail)).thenApply(value -> null);
+        executeMailTrigger(entry.id(), mail)).thenApply(value -> null);
+    } else if (entry.type().equals("mail-sent-trigger")) {
+      return AsyncIterator.execute(sentMails, mail ->
+        executeMailTrigger(entry.id(), mail)).thenApply(value -> null);
     }
     return null;
   }
 
-  private CompletableFuture<Void> executeMailReceiveTrigger(
+  private CompletableFuture<Void> executeMailTrigger(
     UUID triggerId, Message mail
   ) {
     return coreModule.createWorkflow(triggerId).thenAccept(workflow ->
-      workflow.trigger(createMailReceiveInformation(mail)));
+      workflow.trigger(createMailInformation(mail)));
   }
 
-  private Map<String, Object> createMailReceiveInformation(Message mail) {
+  private Map<String, Object> createMailInformation(Message mail) {
     try {
       var information = Maps.<String, Object>newHashMap();
       information.put("mailEntryIdentifier", mail.getHeader("Message-ID")[0]);

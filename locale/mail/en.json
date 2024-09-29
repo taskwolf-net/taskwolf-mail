@@ -11,6 +11,16 @@
   "mail.trigger.receive.output.title": "Email title",
   "mail.trigger.receive.output.body": "Email body",
 
+  "mail.trigger.sent.name": "Email Sent",
+  "mail.trigger.sent.description": "Is triggered when an email is sent",
+  "mail.trigger.sent.input.mail.name": "Email",
+  "mail.trigger.sent.input.mail.description": "The email whose mailbox is to be checked for outgoing emails",
+  "mail.trigger.sent.output.identifier": "Entry ID",
+  "mail.trigger.sent.output.sender": "Sender",
+  "mail.trigger.sent.output.prefix": "Prefix",
+  "mail.trigger.sent.output.title": "Email title",
+  "mail.trigger.sent.output.body": "Email body",
+
   "mail.action.send.name": "Send email",
   "mail.action.send.description": "Sends an email you have compiled to a recipient",
   "mail.action.send.input.mail.name": "Email",

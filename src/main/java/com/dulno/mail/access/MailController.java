@@ -83,19 +83,27 @@ public class MailController extends DulnoRestController {
   }
 
   private static final Flags RECEIVE_FLAG = new Flags("DULNO-RECEIVE");
+  private static final Flags SENT_FLAG = new Flags("DULNO-SENT");
 
   private void setupMail(MailEntry mail) {
     try {
       var session = createSession("imap", mail.imapHost(), mail.imapPort());
       var store = session.getStore("imap");
       store.connect(mail.imapHost(), mail.mailUser(), mail.mailPassword());
-      var folder = store.getFolder("INBOX");
-      folder.open(Folder.READ_WRITE);
-      var entries = folder.getMessages();
-      for (var entry : entries) {
+      var inboxFolder = store.getFolder("INBOX");
+      inboxFolder.open(Folder.READ_WRITE);
+      var inboxEntries = inboxFolder.getMessages();
+      for (var entry : inboxEntries) {
         entry.setFlags(RECEIVE_FLAG, true);
       }
-      folder.close(true);
+      var sentFolder = store.getFolder("Sent");
+      sentFolder.open(Folder.READ_WRITE);
+      var sentEntries = sentFolder.getMessages();
+      for (var entry : sentEntries) {
+        entry.setFlags(SENT_FLAG, true);
+      }
+      inboxFolder.close(true);
+      sentFolder.close(true);
       store.close();
     } catch (Exception exception) {
       exception.printStackTrace();

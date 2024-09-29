@@ -11,6 +11,16 @@
   "mail.trigger.receive.output.title": "E-Mail-Titel",
   "mail.trigger.receive.output.body": "E-Mail-Körper",
 
+  "mail.trigger.sent.name": "E-Mail Gesendet",
+  "mail.trigger.sent.description": "Wird ausgelöst, wenn eine E-Mail gesendet wird",
+  "mail.trigger.sent.input.mail.name": "E-Mail",
+  "mail.trigger.sent.input.mail.description": "Die E-Mail, deren Posteingang auf ausgehende E-Mails überprüft werden soll",
+  "mail.trigger.sent.output.identifier": "Eintrags-ID",
+  "mail.trigger.sent.output.sender": "Sender",
+  "mail.trigger.sent.output.prefix": "Präfix",
+  "mail.trigger.sent.output.title": "E-Mail-Titel",
+  "mail.trigger.sent.output.body": "E-Mail-Körper",
+
   "mail.action.send.name": "E-Mail senden",
   "mail.action.send.description": "Sendet eine von Ihnen zusammengestellte E-Mail an einen Empfänger",
   "mail.action.send.input.mail.name": "E-Mail",
