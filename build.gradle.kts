@@ -1,33 +1,11 @@
 plugins {
   id("java")
-  id("maven-publish")
 }
 
 group = "com.dulno"
 version = "1.0.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_21
 java.targetCompatibility = JavaVersion.VERSION_21
-
-publishing {
-  publications {
-    create<MavenPublication>("library") {
-      from(components["java"])
-    }
-  }
-  repositories {
-    maven {
-      url = uri("https://git.dulno.com/api/v4/projects/12/packages/maven")
-      credentials(HttpHeaderCredentials::class) {
-        name = "Private-Token"
-        value = System.getenv("DULNO_GITLAB_PRIVATE_TOKEN") ?:
-          findProperty("dulnoGitlabPrivateToken") as String?
-      }
-      authentication {
-        create("header", HttpHeaderAuthentication::class)
-      }
-    }
-  }
-}
 
 repositories {
   mavenCentral()
