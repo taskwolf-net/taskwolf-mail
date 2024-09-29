@@ -5,6 +5,7 @@
   "mail.trigger.receive.description": "Wird ausgelöst, wenn Sie eine neue E-Mail erhalten",
   "mail.trigger.receive.input.mail.name": "E-Mail",
   "mail.trigger.receive.input.mail.description": "Die E-Mail, deren Posteingang auf neue E-Mails überprüft werden soll",
+  "mail.trigger.receive.output.identifier": "Eintrags-ID",
   "mail.trigger.receive.output.sender": "Sender",
   "mail.trigger.receive.output.prefix": "Präfix",
   "mail.trigger.receive.output.title": "E-Mail-Titel",

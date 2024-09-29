@@ -44,6 +44,7 @@ public final class MailReceiveTrigger implements Trigger {
       .withDescription("mail.trigger.receive.description")
       .withInputVariable(InputComponentVariable.createSelect("mail.trigger.receive.input.mail.name",
         "mailIdentifier", "mail.trigger.receive.input.mail.description", mailComponentSelect))
+      .withOutputVariable(OutputComponentVariable.create("mail.trigger.receive.output.identifier", "mailEntryIdentifier"))
       .withOutputVariable(OutputComponentVariable.create("mail.trigger.receive.output.sender", "mailSender"))
       .withOutputVariable(OutputComponentVariable.create("mail.trigger.receive.output.prefix", "mailPrefix"))
       .withOutputVariable(OutputComponentVariable.create("mail.trigger.receive.output.title", "mailTitle"))
@@ -59,13 +60,13 @@ public final class MailReceiveTrigger implements Trigger {
   @Override
   public CompletableFuture<Void> insert(UUID triggerId, Map<String, Object> content) {
     return contentDatabaseTable.insertContent(triggerId,
-      DatabaseRow.of(content.get("mailIdentifier")));
+      DatabaseRow.of(UUID.fromString((String) content.get("mailIdentifier"))));
   }
 
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID triggerId) {
     return contentDatabaseTable.findContent(triggerId).thenApply(row ->
-      Map.of("mailIdentifier", row.findCell(1).stringValue()));
+      Map.of("mailIdentifier", row.findCell(1).uuidValue()));
   }
 
   @Override

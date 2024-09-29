@@ -61,12 +61,13 @@ public final class MailDeleteAction implements Action<MailDeleteActionExecutor> 
   @Override
   public CompletableFuture<Void> insert(UUID actionId, Map<String, Object> content) {
     return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(
-      content.get("mailIdentifier"), content.get("mailEntryIdentifier")));
+      UUID.fromString((String) content.get("mailIdentifier")),
+      content.get("mailEntryIdentifier")));
   }
 
   @Override
-  public CompletableFuture<Map<String, Object>> findContent(UUID triggerId) {
-    return contentDatabaseTable.findContent(triggerId).thenApply(row ->
+  public CompletableFuture<Map<String, Object>> findContent(UUID actionId) {
+    return contentDatabaseTable.findContent(actionId).thenApply(row ->
       Map.of("mailIdentifier", row.findCell(1).uuidValue(),
         "mailEntryIdentifier", row.findCell(2).stringValue()));
   }

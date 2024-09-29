@@ -5,6 +5,7 @@
   "mail.trigger.receive.description": "Is triggered when you receive a new email",
   "mail.trigger.receive.input.mail.name": "Email",
   "mail.trigger.receive.input.mail.description": "The email whose mailbox is to be checked for new emails",
+  "mail.trigger.receive.output.identifier": "Entry ID",
   "mail.trigger.receive.output.sender": "Sender",
   "mail.trigger.receive.output.prefix": "Prefix",
   "mail.trigger.receive.output.title": "Email title",

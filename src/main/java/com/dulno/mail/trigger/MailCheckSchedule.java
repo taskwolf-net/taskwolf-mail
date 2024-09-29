@@ -49,7 +49,7 @@ public final class MailCheckSchedule {
     AsyncIterator.execute(entries,
       entry -> coreModule.findTrigger(entry.module(), entry.type()).get()
         .findContent(entry.id()).thenAccept(content ->
-          result.put(UUID.fromString((String) content.get("mailIdentifier")), entry))
+          result.put((UUID) content.get("mailIdentifier"), entry))
         .thenAccept(value -> futureResponse.complete(result)));
     return futureResponse;
   }
@@ -62,7 +62,8 @@ public final class MailCheckSchedule {
       mailDatabaseTable.findMail(mailId)
         .thenApplyAsync(this::readMailInbox)
         .thenAcceptAsync(result -> processMailTriggers(result.getKey(),
-          result.getValue(), findReceivedMails(result.getValue()), mailTriggers));
+          result.getValue(), findReceivedMails(result.getValue()),
+          Lists.newArrayList(mailTriggers)));
     }
   }
 
@@ -109,14 +110,15 @@ public final class MailCheckSchedule {
 
   private void processMailTriggers(
     Store store, Folder folder, List<Message> receivedMails,
-    Collection<TriggerEntry> triggers
+    List<TriggerEntry> triggers
   ) {
+    AsyncIterator.execute(triggers, trigger ->
+        processMailTrigger(trigger, receivedMails))
+      .thenAccept(value -> closeMailSession(store, folder));
+  }
+
+  private void closeMailSession(Store store, Folder folder) {
     try {
-      for (var entry : triggers) {
-        if (entry.type().equals("mail-receive-trigger")) {
-          executeMailReceiveTrigger(entry.id(), receivedMails);
-        }
-      }
       folder.close(true);
       store.close();
     } catch (Exception exception) {
@@ -124,20 +126,27 @@ public final class MailCheckSchedule {
     }
   }
 
-  private void executeMailReceiveTrigger(UUID triggerId, List<Message> receivedMails) {
-    for (var mail : receivedMails) {
-      executeMailReceiveTrigger(triggerId, mail);
+  private CompletableFuture<Void> processMailTrigger(
+    TriggerEntry entry, List<Message> receivedMails
+  ) {
+    if (entry.type().equals("mail-receive-trigger")) {
+      return AsyncIterator.execute(receivedMails, mail ->
+        executeMailReceiveTrigger(entry.id(), mail)).thenApply(value -> null);
     }
+    return null;
   }
 
-  private void executeMailReceiveTrigger(UUID triggerId, Message mail) {
-    coreModule.createWorkflow(triggerId).thenAccept(workflow ->
+  private CompletableFuture<Void> executeMailReceiveTrigger(
+    UUID triggerId, Message mail
+  ) {
+    return coreModule.createWorkflow(triggerId).thenAccept(workflow ->
       workflow.trigger(createMailReceiveInformation(mail)));
   }
 
   private Map<String, Object> createMailReceiveInformation(Message mail) {
     try {
       var information = Maps.<String, Object>newHashMap();
+      information.put("mailEntryIdentifier", mail.getHeader("Message-ID")[0]);
       information.put("mailSender", findMailSender(mail));
       information.put("mailPrefix", findMailPrefix(mail));
       information.put("mailTitle", mail.getSubject());

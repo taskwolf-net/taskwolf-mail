@@ -80,14 +80,15 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
   @Override
   public CompletableFuture<Void> insert(UUID actionId, Map<String, Object> content) {
     return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(
-      content.get("mailIdentifier"), content.get("mailPrefix"),
-      content.get("mailName"), content.get("mailReceiver"),
-      content.get("mailTitle"), content.get("mailBody")));
+      UUID.fromString((String) content.get("mailIdentifier")),
+      content.get("mailPrefix"), content.get("mailName"),
+      content.get("mailReceiver"), content.get("mailTitle"),
+      content.get("mailBody")));
   }
 
   @Override
-  public CompletableFuture<Map<String, Object>> findContent(UUID triggerId) {
-    return contentDatabaseTable.findContent(triggerId).thenApply(row ->
+  public CompletableFuture<Map<String, Object>> findContent(UUID actionId) {
+    return contentDatabaseTable.findContent(actionId).thenApply(row ->
       Map.of("mailIdentifier", row.findCell(1).uuidValue(),
         "mailPrefix", row.findCell(2).stringValue(),
         "mailName", row.findCell(3).stringValue(),
