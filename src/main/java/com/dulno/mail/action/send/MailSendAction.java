@@ -89,7 +89,7 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(row ->
-      Map.of("mailIdentifier", row.findCell(1).uuidValue(),
+      Map.of("mailIdentifier", row.findCell(1).uuidValue().toString(),
         "mailPrefix", row.findCell(2).stringValue(),
         "mailName", row.findCell(3).stringValue(),
         "mailReceiver", row.findCell(4).stringValue(),

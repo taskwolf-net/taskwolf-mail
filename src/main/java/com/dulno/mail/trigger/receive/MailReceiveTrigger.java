@@ -66,7 +66,7 @@ public final class MailReceiveTrigger implements Trigger {
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID triggerId) {
     return contentDatabaseTable.findContent(triggerId).thenApply(row ->
-      Map.of("mailIdentifier", row.findCell(1).uuidValue()));
+      Map.of("mailIdentifier", row.findCell(1).uuidValue().toString()));
   }
 
   @Override
