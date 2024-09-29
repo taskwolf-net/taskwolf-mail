@@ -54,8 +54,7 @@ public final class MailDeleteActionExecutor implements ActionExecutor {
       }
       return ActionResult.failure("mail.action.delete.failure.mail.entry.not.found");
     } catch (Exception exception) {
-      exception.printStackTrace();
-      return ActionResult.failure("mail.action.delete.failure.mail.exception");
+      return ActionResult.failure(exception.getMessage());
     }
   }
 

@@ -57,8 +57,7 @@ public final class MailSendActionExecutor implements ActionExecutor {
       transport.close();
       return ActionResult.success(buildInformation(mail, message.getMessageID()));
     } catch (Exception exception) {
-      exception.printStackTrace();
-      return ActionResult.failure("mail.action.send.failure.mail.exception");
+      return ActionResult.failure(exception.getMessage());
     }
   }
 
@@ -66,7 +65,6 @@ public final class MailSendActionExecutor implements ActionExecutor {
     try {
       return new InternetAddress(email);
     } catch (Exception exception) {
-      exception.printStackTrace();
       return null;
     }
   }

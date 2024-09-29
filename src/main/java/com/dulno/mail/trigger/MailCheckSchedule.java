@@ -82,7 +82,6 @@ public final class MailCheckSchedule {
       return new AbstractMap.SimpleEntry<>(store, new Folder[] {inboxFolder,
         sentFolder});
     } catch (Exception exception) {
-      exception.printStackTrace();
       return null;
     }
   }
@@ -109,7 +108,6 @@ public final class MailCheckSchedule {
       }
       return Arrays.stream(receivedMails).toList();
     } catch (Exception exception) {
-      exception.printStackTrace();
       return Lists.newArrayList();
     }
   }
@@ -124,7 +122,6 @@ public final class MailCheckSchedule {
       }
       return Arrays.stream(sentMails).toList();
     } catch (Exception exception) {
-      exception.printStackTrace();
       return Lists.newArrayList();
     }
   }
@@ -145,7 +142,6 @@ public final class MailCheckSchedule {
       }
       store.close();
     } catch (Exception exception) {
-      exception.printStackTrace();
     }
   }
 
@@ -179,7 +175,6 @@ public final class MailCheckSchedule {
       information.put("mailBody", findMailBody(mail));
       return information;
     } catch (Exception exception) {
-      exception.printStackTrace();
       return Maps.newHashMap();
     }
   }
@@ -189,7 +184,6 @@ public final class MailCheckSchedule {
       var sender = (InternetAddress) mail.getFrom()[0];
       return sender.getAddress();
     } catch (Exception exception) {
-      exception.printStackTrace();
       return "";
     }
   }
@@ -201,7 +195,6 @@ public final class MailCheckSchedule {
       var email = recipient.getAddress();
       return email.substring(0, email.indexOf('@'));
     } catch (Exception exception) {
-      exception.printStackTrace();
       return "";
     }
   }

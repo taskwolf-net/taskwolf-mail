@@ -63,7 +63,7 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
       .withInputVariable(InputComponentVariable.createRequired("mail.action.send.input.title.name",
         "mailTitle", "mail.action.send.input.title.description", InputComponentDataType.TEXT))
       .withInputVariable(InputComponentVariable.createRequired("mail.action.send.input.body.name",
-        "mailBody", "mail.action.send.input.body.description", InputComponentDataType.TEXT))
+        "mailBody", "mail.action.send.input.body.description", InputComponentDataType.TEXT_AREA))
       .withOutputVariable(OutputComponentVariable.create("mail.action.send.output.identifier", "mailEntryIdentifier"))
       .withOutputVariable(OutputComponentVariable.create("mail.action.send.output.sender", "mailSender"))
       .withOutputVariable(OutputComponentVariable.create("mail.action.send.output.receiver", "mailReceiver"))
