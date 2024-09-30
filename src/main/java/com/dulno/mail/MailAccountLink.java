@@ -1,5 +1,6 @@
 package com.dulno.mail;
 
+import com.dulno.core.account.AccountLinkEntry;
 import com.dulno.mail.structure.MailDatabaseTable;
 import lombok.RequiredArgsConstructor;
 import com.dulno.core.account.AccountLink;
@@ -18,9 +19,11 @@ public final class MailAccountLink implements AccountLink {
   }
 
   @Override
-  public CompletableFuture<List<String>> findAccounts(UUID id) {
-    return mailDatabaseTable.findMailsOfOwner(id).thenApply(mails ->
-      mails.stream().map(mail -> mail.id().toString()).toList());
+  public CompletableFuture<List<AccountLinkEntry>> findAccounts(UUID id) {
+    return mailDatabaseTable.findMailsOfOwner(id)
+      .thenApply(mails -> mails.stream()
+        .map(mail -> AccountLinkEntry.create(mail.id().toString(), mail.domain()))
+        .toList());
   }
 
   @Override
