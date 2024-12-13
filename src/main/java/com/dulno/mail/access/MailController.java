@@ -105,8 +105,7 @@ public class MailController extends DulnoRestController {
       inboxFolder.close(true);
       sentFolder.close(true);
       store.close();
-    } catch (Exception exception) {
-      exception.printStackTrace();
+    } catch (Exception ignored) {
     }
   }
 
