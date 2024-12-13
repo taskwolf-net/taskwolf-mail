@@ -20,10 +20,6 @@ public class MailInjectionModule extends AbstractModule {
   MailDatabaseTable provideMailDatabaseTable(
     DatabaseConnection connection, DatabaseKeyspace keyspace
   ) {
-    var mailDatabaseTable = MailDatabaseTable.create(connection, keyspace);
-    mailDatabaseTable.createIfNotExists();
-    mailDatabaseTable.createIndexIfNotExists("owner");
-    mailDatabaseTable.createIndexIfNotExists("domain");
-    return mailDatabaseTable;
+    return MailDatabaseTable.create(connection, keyspace);
   }
 }

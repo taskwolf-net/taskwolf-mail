@@ -17,8 +17,9 @@ public final class MailDatabaseTable extends DatabaseTable {
   ) {
     var columns = Lists.<DatabaseColumn>newArrayList();
     columns.add(DatabaseColumn.create("id", DatabaseDataType.UUID,
-      DatabaseColumn.Type.PRIMARY_KEY));
-    columns.add(DatabaseColumn.create("owner", DatabaseDataType.UUID));
+      DatabaseColumn.Type.PARTITION_KEY));
+    columns.add(DatabaseColumn.create("owner", DatabaseDataType.UUID,
+      DatabaseColumn.Type.CLUSTERING_KEY));
     columns.add(DatabaseColumn.create("domain", DatabaseDataType.TEXT));
     columns.add(DatabaseColumn.create("mailUser", DatabaseDataType.TEXT));
     columns.add(DatabaseColumn.create("mailPassword", DatabaseDataType.TEXT));
@@ -26,8 +27,14 @@ public final class MailDatabaseTable extends DatabaseTable {
     columns.add(DatabaseColumn.create("smtpPort", DatabaseDataType.INT));
     columns.add(DatabaseColumn.create("imapHost", DatabaseDataType.TEXT));
     columns.add(DatabaseColumn.create("imapPort", DatabaseDataType.INT));
-    return new MailDatabaseTable(connection, keyspace, TABLE_NAME, columns);
+    var table = new MailDatabaseTable(connection, keyspace, TABLE_NAME, columns);
+    table.createIfNotExists();
+    table.createIndexIfNotExists("owner");
+    table.initializeViews();
+    return table;
   }
+
+  private DatabaseTable ownerDomainView;
 
   private MailDatabaseTable(
     DatabaseConnection connection, DatabaseKeyspace keyspace, String name,
@@ -35,6 +42,19 @@ public final class MailDatabaseTable extends DatabaseTable {
   ) {
     super(connection, keyspace, name, columns);
   }
+
+  private void initializeViews() {
+    var columns = Lists.<DatabaseColumn>newArrayList();
+    columns.add(DatabaseColumn.create("owner", DatabaseDataType.TEXT,
+      DatabaseColumn.Type.PARTITION_KEY));
+    columns.add(DatabaseColumn.create("domain", DatabaseDataType.UUID,
+      DatabaseColumn.Type.CLUSTERING_KEY));
+    columns.add(DatabaseColumn.create("id", DatabaseDataType.TEXT,
+      DatabaseColumn.Type.CLUSTERING_KEY));
+    ownerDomainView = createMaterializedViewIfNotExists("owner_domain_view",
+      columns);
+  }
+
 
   public CompletableFuture<Void> insertMail(MailEntry mail) {
     return insertMail(mail.id(), mail.ownerId(), mail.domain(), mail.mailUser(),
@@ -60,11 +80,11 @@ public final class MailDatabaseTable extends DatabaseTable {
   }
 
   public void deleteMail(UUID id) {
-    delete(id);
+    delete(DatabaseCondition.of("id", id));
   }
 
   public CompletableFuture<Boolean> mailExists(UUID id) {
-    return exists(id);
+    return exists(DatabaseCondition.of("id", id));
   }
 
   public CompletableFuture<Boolean> mailExistsByOwner(UUID ownerId) {
@@ -74,13 +94,13 @@ public final class MailDatabaseTable extends DatabaseTable {
   }
 
   public CompletableFuture<Boolean> mailExists(UUID ownerId, String domain) {
-    return exists(DatabaseCondition.of(DatabaseCondition.Filtering.ALLOWED,
+    return ownerDomainView.exists(DatabaseCondition.of(
       DatabaseComparison.create("owner", ownerId),
       DatabaseComparison.create("domain", domain)));
   }
 
   public CompletableFuture<MailEntry> findMail(UUID id) {
-    return selectRow(id).thenApply(MailEntry::of);
+    return selectRow(DatabaseCondition.of("id", id)).thenApply(MailEntry::of);
   }
 
   public CompletableFuture<List<MailEntry>> findMailsOfOwner(UUID ownerId) {
