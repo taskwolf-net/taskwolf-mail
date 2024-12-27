@@ -1,8 +1,8 @@
 package com.dulno.mail.trigger;
 
-import com.dulno.core.CoreModule;
 import com.dulno.core.iterator.AsyncIterator;
-import com.dulno.core.trigger.TriggerEntry;
+import com.dulno.workflow.WorkflowModule;
+import com.dulno.workflow.trigger.TriggerEntry;
 import com.dulno.mail.structure.MailDatabaseTable;
 import com.dulno.mail.structure.MailEntry;
 import com.google.common.collect.HashMultimap;
@@ -19,7 +19,7 @@ import java.util.concurrent.*;
 
 @RequiredArgsConstructor(staticName = "create")
 public final class MailCheckSchedule {
-  private final CoreModule coreModule;
+  private final WorkflowModule workflowModule;
   private final MailDatabaseTable mailDatabaseTable;
   private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
   private ScheduledFuture<?> scheduler;
@@ -34,9 +34,9 @@ public final class MailCheckSchedule {
   }
 
   private void execute() {
-    coreModule.findAllTriggerEntries("mail", "mail-receive-trigger")
+    workflowModule.findAllTriggerEntries("mail", "mail-receive-trigger")
       .thenAccept(receiveEntries ->
-        coreModule.findAllTriggerEntries("mail", "mail-sent-trigger")
+        workflowModule.findAllTriggerEntries("mail", "mail-sent-trigger")
           .thenAccept(sentEntries -> assignTriggersToMails(receiveEntries, sentEntries)
             .thenAccept(this::readInboxes)));
   }
@@ -50,7 +50,7 @@ public final class MailCheckSchedule {
     var futureResponse = new CompletableFuture<Multimap<UUID, TriggerEntry>>();
     var result = HashMultimap.<UUID, TriggerEntry>create();
     AsyncIterator.execute(entries,
-      entry -> coreModule.findTrigger(entry.module(), entry.type()).get()
+      entry -> workflowModule.findTrigger(entry.module(), entry.type()).get()
         .findContent(entry.id()).thenAccept(content ->
           result.put((UUID) content.get("mailIdentifier"), entry))
         .thenAccept(value -> futureResponse.complete(result)));
@@ -161,7 +161,7 @@ public final class MailCheckSchedule {
   private CompletableFuture<Void> executeMailTrigger(
     UUID triggerId, Message mail
   ) {
-    return coreModule.createWorkflow(triggerId).thenAccept(workflow ->
+    return workflowModule.createWorkflow(triggerId).thenAccept(workflow ->
       workflow.trigger(createMailInformation(mail)));
   }
 

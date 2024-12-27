@@ -1,8 +1,8 @@
 package com.dulno.mail.action.send;
 
-import com.dulno.core.action.ActionExecutor;
-import com.dulno.core.action.ActionResult;
-import com.dulno.core.workflow.placeholder.PlaceholderDissolve;
+import com.dulno.workflow.action.ActionExecutor;
+import com.dulno.workflow.action.ActionResult;
+import com.dulno.workflow.placeholder.PlaceholderDissolve;
 import com.dulno.mail.structure.MailDatabaseTable;
 import com.dulno.mail.structure.MailEntry;
 import com.google.common.collect.Maps;

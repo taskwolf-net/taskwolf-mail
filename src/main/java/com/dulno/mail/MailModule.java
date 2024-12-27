@@ -1,6 +1,5 @@
 package com.dulno.mail;
 
-import com.dulno.core.CoreModule;
 import com.dulno.core.database.DatabaseConnection;
 import com.dulno.core.database.DatabaseKeyspace;
 import com.dulno.mail.action.delete.MailDeleteAction;
@@ -10,22 +9,23 @@ import com.dulno.mail.structure.MailDatabaseTable;
 import com.dulno.mail.trigger.MailCheckSchedule;
 import com.dulno.mail.trigger.receive.MailReceiveTrigger;
 import com.dulno.mail.trigger.sent.MailSentTrigger;
+import com.dulno.workflow.WorkflowModule;
+import com.dulno.workflow.integration.Integration;
 import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import com.dulno.core.account.AccountLink;
-import com.dulno.core.action.ActionRepository;
+import com.dulno.workflow.action.ActionRepository;
 import com.dulno.core.log.Log;
-import com.dulno.core.module.Module;
 import com.dulno.core.module.ModuleDescription;
 import com.dulno.core.module.ModuleInformation;
 import com.dulno.core.module.ModuleLoadPriority;
-import com.dulno.core.trigger.TriggerRepository;
-import com.dulno.core.workflow.component.input.InputComponentSelect;
+import com.dulno.workflow.trigger.TriggerRepository;
+import com.dulno.workflow.component.input.InputComponentSelect;
 import org.springframework.boot.SpringApplication;
 
 @ModuleDescription(name = "mail", version = "1.0.0-SNAPSHOT",
   priority = ModuleLoadPriority.NEUTRAL)
-public final class MailModule extends Module {
+public final class MailModule extends Integration {
   private Log log;
   private SpringApplication springApplication;
   private MailContextInitializer contextInitializer;
@@ -51,7 +51,7 @@ public final class MailModule extends Module {
 
   private void startMailCheckSchedule(MailDatabaseTable mailDatabaseTable) {
     mailCheckSchedule = MailCheckSchedule.create(
-      injector().getInstance(CoreModule.class), mailDatabaseTable);
+      injector().getInstance(WorkflowModule.class), mailDatabaseTable);
     mailCheckSchedule.start();
   }
 
