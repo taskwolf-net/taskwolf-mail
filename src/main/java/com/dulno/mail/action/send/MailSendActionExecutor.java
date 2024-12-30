@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 @AllArgsConstructor(staticName = "create")
 public final class MailSendActionExecutor implements ActionExecutor {
   private final MailDatabaseTable mailDatabaseTable;
+  private final UUID ownerId;
   private final UUID mailId;
   private String mailPrefix;
   private String mailName;
@@ -48,6 +49,9 @@ public final class MailSendActionExecutor implements ActionExecutor {
 
   private ActionResult execute(MailEntry mail) {
     try {
+      if (!mail.ownerId().equals(ownerId)) {
+        return ActionResult.failure("mail.action.send.failure.mail.access");
+      }
       var session = createSession("smtp", mail.smtpHost(), mail.smtpPort());
       var message = createMessage(mail, session,
         new Address[] {createAddress(mailReceiver)}, mailTitle, mailBody);

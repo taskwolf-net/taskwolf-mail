@@ -24,6 +24,7 @@ public final class MailDeleteAction implements Action<MailDeleteActionExecutor> 
     DatabaseConnection databaseConnection, DatabaseKeyspace databaseKeyspace
   ) {
     var contentColumns = Lists.<DatabaseColumn>newArrayList();
+    contentColumns.add(DatabaseColumn.create("ownerId", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("mailId", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("mailEntryId", DatabaseDataType.TEXT));
     return new MailDeleteAction(mailComponentSelect, mailDatabaseTable,
@@ -59,8 +60,10 @@ public final class MailDeleteAction implements Action<MailDeleteActionExecutor> 
   }
 
   @Override
-  public CompletableFuture<Void> insert(UUID actionId, Map<String, Object> content) {
-    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(
+  public CompletableFuture<Void> insert(
+    UUID actionId, UUID ownerId, Map<String, Object> content
+  ) {
+    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(ownerId,
       UUID.fromString((String) content.get("mailIdentifier")),
       content.get("mailEntryIdentifier")));
   }
@@ -68,15 +71,16 @@ public final class MailDeleteAction implements Action<MailDeleteActionExecutor> 
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(row ->
-      Map.of("mailIdentifier", row.findCell(1).uuidValue().toString(),
-        "mailEntryIdentifier", row.findCell(2).stringValue()));
+      Map.of("mailIdentifier", row.findCell(2).uuidValue().toString(),
+        "mailEntryIdentifier", row.findCell(3).stringValue()));
   }
 
   @Override
   public CompletableFuture<MailDeleteActionExecutor> build(UUID actionId) {
     return contentDatabaseTable.findContent(actionId)
       .thenApply(content -> MailDeleteActionExecutor.create(mailDatabaseTable,
-        content.findCell(1).uuidValue(), content.findCell(2).stringValue()));
+        content.findCell(1).uuidValue(), content.findCell(2).uuidValue(),
+        content.findCell(3).stringValue()));
   }
 
   @Override

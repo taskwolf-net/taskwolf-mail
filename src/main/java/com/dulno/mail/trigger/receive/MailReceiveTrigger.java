@@ -2,6 +2,7 @@ package com.dulno.mail.trigger.receive;
 
 import com.dulno.core.database.*;
 import com.dulno.core.database.condition.DatabaseCondition;
+import com.dulno.mail.structure.MailDatabaseTable;
 import com.dulno.workflow.trigger.Trigger;
 import com.dulno.workflow.trigger.TriggerContentDatabaseTable;
 import com.dulno.workflow.trigger.TriggerInformation;
@@ -19,16 +20,18 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor(staticName = "create")
 public final class MailReceiveTrigger implements Trigger {
   public static MailReceiveTrigger create(
-    InputComponentSelect mailComponentSelect,
+    MailDatabaseTable mailDatabaseTable, InputComponentSelect mailComponentSelect,
     DatabaseConnection databaseConnection, DatabaseKeyspace databaseKeyspace
   ) {
     var contentColumns = Lists.<DatabaseColumn>newArrayList();
+    contentColumns.add(DatabaseColumn.create("ownerId", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("mailId", DatabaseDataType.UUID));
-    return new MailReceiveTrigger(mailComponentSelect,
+    return new MailReceiveTrigger(mailDatabaseTable, mailComponentSelect,
       TriggerContentDatabaseTable.create(databaseConnection, databaseKeyspace,
         "trigger_mail_receive", contentColumns));
   }
 
+  private final MailDatabaseTable mailDatabaseTable;
   private final InputComponentSelect mailComponentSelect;
   private final TriggerContentDatabaseTable contentDatabaseTable;
 
@@ -58,15 +61,35 @@ public final class MailReceiveTrigger implements Trigger {
   }
 
   @Override
-  public CompletableFuture<Void> insert(UUID triggerId, Map<String, Object> content) {
-    return contentDatabaseTable.insertContent(triggerId,
-      DatabaseRow.of(UUID.fromString((String) content.get("mailIdentifier"))));
+  public CompletableFuture<Void> insert(
+    UUID triggerId, UUID ownerId, Map<String, Object> content
+  ) {
+    return contentDatabaseTable.insertContent(triggerId, DatabaseRow.of(ownerId,
+      UUID.fromString((String) content.get("mailIdentifier"))));
+  }
+
+  @Override
+  public CompletableFuture<Boolean> checkExecution(UUID triggerId) {
+    return contentDatabaseTable.findContent(triggerId)
+      .thenCompose(row -> mailDatabaseTable.mailExists(row.findCell(2).uuidValue())
+        .thenCompose(exists -> checkExecution(row.findCell(1).uuidValue(),
+          row.findCell(2).uuidValue(), exists)));
+  }
+
+  public CompletableFuture<Boolean> checkExecution(
+    UUID ownerId, UUID mailId, boolean mailExists
+  ) {
+    if (!mailExists) {
+      return CompletableFuture.completedFuture(false);
+    }
+    return mailDatabaseTable.findMail(mailId)
+      .thenApply(mail -> mail.ownerId().equals(ownerId));
   }
 
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID triggerId) {
     return contentDatabaseTable.findContent(triggerId).thenApply(row ->
-      Map.of("mailIdentifier", row.findCell(1).uuidValue().toString()));
+      Map.of("mailIdentifier", row.findCell(2).uuidValue().toString()));
   }
 
   @Override

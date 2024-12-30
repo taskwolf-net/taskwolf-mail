@@ -24,6 +24,7 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
     DatabaseConnection databaseConnection, DatabaseKeyspace databaseKeyspace
   ) {
     var contentColumns = Lists.<DatabaseColumn>newArrayList();
+    contentColumns.add(DatabaseColumn.create("ownerId", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("mailId", DatabaseDataType.UUID));
     contentColumns.add(DatabaseColumn.create("mailPrefix", DatabaseDataType.TEXT));
     contentColumns.add(DatabaseColumn.create("mailName", DatabaseDataType.TEXT));
@@ -78,8 +79,10 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
   }
 
   @Override
-  public CompletableFuture<Void> insert(UUID actionId, Map<String, Object> content) {
-    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(
+  public CompletableFuture<Void> insert(
+    UUID actionId, UUID ownerId, Map<String, Object> content
+  ) {
+    return contentDatabaseTable.insertContent(actionId, DatabaseRow.of(ownerId,
       UUID.fromString((String) content.get("mailIdentifier")),
       content.get("mailPrefix"), content.get("mailName"),
       content.get("mailReceiver"), content.get("mailTitle"),
@@ -89,21 +92,22 @@ public final class MailSendAction implements Action<MailSendActionExecutor> {
   @Override
   public CompletableFuture<Map<String, Object>> findContent(UUID actionId) {
     return contentDatabaseTable.findContent(actionId).thenApply(row ->
-      Map.of("mailIdentifier", row.findCell(1).uuidValue().toString(),
-        "mailPrefix", row.findCell(2).stringValue(),
-        "mailName", row.findCell(3).stringValue(),
-        "mailReceiver", row.findCell(4).stringValue(),
-        "mailTitle", row.findCell(5).stringValue(),
-        "mailBody", row.findCell(6).stringValue()));
+      Map.of("mailIdentifier", row.findCell(2).uuidValue().toString(),
+        "mailPrefix", row.findCell(3).stringValue(),
+        "mailName", row.findCell(4).stringValue(),
+        "mailReceiver", row.findCell(5).stringValue(),
+        "mailTitle", row.findCell(6).stringValue(),
+        "mailBody", row.findCell(7).stringValue()));
   }
 
   @Override
   public CompletableFuture<MailSendActionExecutor> build(UUID actionId) {
     return contentDatabaseTable.findContent(actionId)
       .thenApply(content -> MailSendActionExecutor.create(mailDatabaseTable,
-        content.findCell(1).uuidValue(), content.findCell(2).stringValue(),
+        content.findCell(1).uuidValue(), content.findCell(2).uuidValue(),
         content.findCell(3).stringValue(), content.findCell(4).stringValue(),
-        content.findCell(5).stringValue(), content.findCell(6).stringValue()));
+        content.findCell(5).stringValue(), content.findCell(6).stringValue(),
+        content.findCell(7).stringValue()));
   }
 
   @Override

@@ -19,6 +19,7 @@ import java.util.concurrent.CompletableFuture;
 @AllArgsConstructor(staticName = "create")
 public final class MailDeleteActionExecutor implements ActionExecutor {
   private final MailDatabaseTable mailDatabaseTable;
+  private final UUID ownerId;
   private final UUID mailId;
   private String mailEntryId;
 
@@ -38,6 +39,9 @@ public final class MailDeleteActionExecutor implements ActionExecutor {
 
   private ActionResult execute(MailEntry mail) {
     try {
+      if (!mail.ownerId().equals(ownerId)) {
+        return ActionResult.failure("mail.action.delete.failure.mail.access");
+      }
       var session = createSession("imap", mail.imapHost(), mail.imapPort());
       var store = session.getStore("imap");
       store.connect(mail.imapHost(), mail.mailUser(), mail.mailPassword());

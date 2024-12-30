@@ -78,11 +78,12 @@ public final class MailModule extends Integration {
   public TriggerRepository triggerRepository() {
     var databaseConnection = injector().getInstance(DatabaseConnection.class);
     var databaseKeyspace = injector().getInstance(DatabaseKeyspace.class);
+    var mailDatabaseTable = injector().getInstance(MailDatabaseTable.class);
     var repository = TriggerRepository.create();
-    repository.registerTrigger(MailReceiveTrigger.create(mailComponentSelect,
-      databaseConnection, databaseKeyspace));
-    repository.registerTrigger(MailSentTrigger.create(mailComponentSelect,
-      databaseConnection, databaseKeyspace));
+    repository.registerTrigger(MailReceiveTrigger.create(mailDatabaseTable,
+      mailComponentSelect, databaseConnection, databaseKeyspace));
+    repository.registerTrigger(MailSentTrigger.create(mailDatabaseTable,
+      mailComponentSelect, databaseConnection, databaseKeyspace));
     return repository;
   }
 
