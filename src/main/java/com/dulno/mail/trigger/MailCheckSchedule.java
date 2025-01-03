@@ -24,7 +24,7 @@ public final class MailCheckSchedule {
   private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
   private ScheduledFuture<?> scheduler;
 
-  private static final int INBOX_CHECK_INITIAL_DELAY = 10;
+  private static final int INBOX_CHECK_INITIAL_DELAY = 30;
   private static final int INBOX_CHECK_INTERVAL = 5 * 60;
   private static final TimeUnit INBOX_CHECK_TIME_UNIT = TimeUnit.SECONDS;
 
@@ -52,7 +52,7 @@ public final class MailCheckSchedule {
     AsyncIterator.execute(entries,
       entry -> workflowModule.findTrigger(entry.module(), entry.type()).get()
         .findContent(entry.id()).thenAccept(content ->
-          result.put((UUID) content.get("mailIdentifier"), entry))
+          result.put(UUID.fromString((String) content.get("mailIdentifier")), entry))
         .thenAccept(value -> futureResponse.complete(result)));
     return futureResponse;
   }
