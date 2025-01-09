@@ -44,7 +44,8 @@
   "mail.action.send.output.title": "Email title",
   "mail.action.send.output.body": "Email body",
   "mail.action.send.failure.mail.not.found": "An error has occurred while sending an email. The error occurred because the mail account could not be found. Could it be that you have removed the email?",
-  "mail.action.send.failure.mail.exception": "An error has occurred while sending an email. Please try again or contact our support team.",
+  "mail.action.send.failure.mail.access": "An error has occurred while sending an email. You do not have access to the selected mail account.",
+  "mail.action.send.failure.mail.address": "An error has occurred while sending an email. Unfortunately, the email address provided is incorrect.",
 
   "mail.action.delete.name": "Delete email",
   "mail.action.delete.description": "Deletes an email from the inbox",
@@ -54,6 +55,6 @@
   "mail.action.delete.input.entry.description": "The ID of the email entry from the inbox that is to be deleted",
   "mail.action.delete.output.identifier": "Entry ID",
   "mail.action.delete.failure.mail.not.found": "An error has occurred while deleting an email. The error occurred because the mail account could not be found. Could it be that you have removed the email?",
-  "mail.action.delete.failure.mail.entry.not.found": "An error has occurred while deleting an email. The error has occurred because the email to be deleted could not be found. Is it possible that the email has already been deleted?",
-  "mail.action.delete.failure.mail.exception": "An error has occurred while deleting an email. Please try again or contact our support team."
+  "mail.action.delete.failure.mail.access": "An error has occurred while deleting an email. You do not have access to the selected mail account.",
+  "mail.action.delete.failure.mail.entry.not.found": "An error has occurred while deleting an email. The error has occurred because the email to be deleted could not be found. Is it possible that the email has already been deleted?"
 }

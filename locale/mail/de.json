@@ -44,7 +44,8 @@
   "mail.action.send.output.title": "E-Mail-Titel",
   "mail.action.send.output.body": "E-Mail-Körper",
   "mail.action.send.failure.mail.not.found": "Beim Senden einer E-Mail ist ein Fehler aufgetreten. Der Fehler ist aufgetreten, weil das E-Mail-Konto nicht gefunden werden konnte. Könnte es sein, dass Sie die E-Mail gelöscht haben?",
-  "mail.action.send.failure.mail.exception": "Beim Senden einer E-Mail ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie unser Support-Team.",
+  "mail.action.send.failure.mail.access": "Beim Senden einer E-Mail ist ein Fehler aufgetreten. Sie haben keinen Zugriff auf das ausgewählte E-Mail-Konto.",
+  "mail.action.send.failure.mail.address": "Beim Senden einer E-Mail ist ein Fehler aufgetreten. Leider ist die angegebene E-Mail-Adresse falsch.",
 
   "mail.action.delete.name": "E-Mail löschen",
   "mail.action.delete.description": "Löscht eine E-Mail aus dem Posteingang",
@@ -54,6 +55,7 @@
   "mail.action.delete.input.entry.description": "Die ID des E-Mail-Eintrags aus dem Posteingang, der gelöscht werden soll",
   "mail.action.delete.output.identifier": "Eintrags-ID",
   "mail.action.delete.failure.mail.not.found": "Beim Löschen einer E-Mail ist ein Fehler aufgetreten. Der Fehler trat auf, weil das E-Mail-Konto nicht gefunden werden konnte. Könnte es sein, dass Sie die E-Mail gelöscht haben?",
-  "mail.action.delete.failure.mail.entry.not.found": "Beim Löschen einer E-Mail ist ein Fehler aufgetreten. Der Fehler ist aufgetreten, weil die zu löschende E-Mail nicht gefunden werden konnte. Ist es möglich, dass die E-Mail bereits gelöscht wurde?",
-  "mail.action.delete.failure.mail.exception": "Beim Löschen einer E-Mail ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie unser Support-Team."
+  "mail.action.delete.failure.mail.access": "Beim Löschen einer E-Mail ist ein Fehler aufgetreten. Sie haben keinen Zugriff auf das ausgewählte E-Mail-Konto.",
+  "mail.action.delete.failure.mail.address": "Beim Löschen einer E-Mail ist ein Fehler aufgetreten. Leider ist die angegebene E-Mail-Adresse falsch.",
+  "mail.action.delete.failure.mail.entry.not.found": "Beim Löschen einer E-Mail ist ein Fehler aufgetreten. Der Fehler ist aufgetreten, weil die zu löschende E-Mail nicht gefunden werden konnte. Ist es möglich, dass die E-Mail bereits gelöscht wurde?"
 }

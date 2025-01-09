@@ -53,8 +53,12 @@ public final class MailSendActionExecutor implements ActionExecutor {
         return ActionResult.failure("mail.action.send.failure.mail.access");
       }
       var session = createSession("smtp", mail.smtpHost(), mail.smtpPort());
-      var message = createMessage(mail, session,
-        new Address[] {createAddress(mailReceiver)}, mailTitle, mailBody);
+      var address = createAddress(mailReceiver);
+      if (address == null) {
+        return ActionResult.failure("mail.action.send.failure.mail.address");
+      }
+      var message = createMessage(mail, session, new Address[] {address},
+        mailTitle, mailBody);
       var transport = session.getTransport("smtp");
       transport.connect(mail.smtpHost(), mail.mailUser(), mail.mailPassword());
       transport.sendMessage(message, message.getAllRecipients());
