@@ -33,7 +33,7 @@ public final class MailAccountLink implements AccountLink {
 
   @Override
   public String registrationUrl(UUID id, String apiKey) {
-    return "https://dulno.com/mail/connect/";
+    return "/mail/connect/";
   }
 
   @Override
