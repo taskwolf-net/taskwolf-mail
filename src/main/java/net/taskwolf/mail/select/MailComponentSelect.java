@@ -1,10 +1,10 @@
-package com.dulno.mail.select;
+package net.taskwolf.mail.select;
 
-import com.dulno.mail.structure.MailDatabaseTable;
+import net.taskwolf.mail.structure.MailDatabaseTable;
 import lombok.RequiredArgsConstructor;
-import com.dulno.core.user.User;
-import com.dulno.workflow.component.input.InputComponentSelect;
-import com.dulno.workflow.component.input.InputComponentSelectEntry;
+import net.taskwolf.core.user.User;
+import net.taskwolf.workflow.component.input.InputComponentSelect;
+import net.taskwolf.workflow.component.input.InputComponentSelectEntry;
 
 import java.util.List;
 import java.util.Map;

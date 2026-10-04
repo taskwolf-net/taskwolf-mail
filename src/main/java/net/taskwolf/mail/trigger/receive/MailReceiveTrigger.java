@@ -1,14 +1,14 @@
-package com.dulno.mail.trigger.receive;
+package net.taskwolf.mail.trigger.receive;
 
-import com.dulno.core.database.*;
-import com.dulno.core.database.condition.DatabaseCondition;
-import com.dulno.mail.structure.MailDatabaseTable;
-import com.dulno.workflow.trigger.Trigger;
-import com.dulno.workflow.trigger.TriggerContentDatabaseTable;
-import com.dulno.workflow.trigger.TriggerInformation;
-import com.dulno.workflow.component.input.InputComponentSelect;
-import com.dulno.workflow.component.input.InputComponentVariable;
-import com.dulno.workflow.component.output.OutputComponentVariable;
+import net.taskwolf.core.database.*;
+import net.taskwolf.core.database.condition.DatabaseCondition;
+import net.taskwolf.mail.structure.MailDatabaseTable;
+import net.taskwolf.workflow.trigger.Trigger;
+import net.taskwolf.workflow.trigger.TriggerContentDatabaseTable;
+import net.taskwolf.workflow.trigger.TriggerInformation;
+import net.taskwolf.workflow.component.input.InputComponentSelect;
+import net.taskwolf.workflow.component.input.InputComponentVariable;
+import net.taskwolf.workflow.component.output.OutputComponentVariable;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 

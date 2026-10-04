@@ -1,5 +1,5 @@
 {
-  "mail.link.description": "Would you like to add another mail to integrate it into your automation with the help of Dulno? Just click on the logo.",
+  "mail.link.description": "Would you like to add another mail to integrate it into your automation with the help of Taskwolf? Just click on the logo.",
 
   "mail.trigger.receive.name": "Email Receive",
   "mail.trigger.receive.description": "Is triggered when you receive a new email",

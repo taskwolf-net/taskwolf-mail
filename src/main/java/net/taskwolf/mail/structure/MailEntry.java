@@ -1,6 +1,6 @@
-package com.dulno.mail.structure;
+package net.taskwolf.mail.structure;
 
-import com.dulno.core.database.DatabaseRow;
+import net.taskwolf.core.database.DatabaseRow;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.experimental.Accessors;

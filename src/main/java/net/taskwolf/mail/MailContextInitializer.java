@@ -1,6 +1,6 @@
-package com.dulno.mail;
+package net.taskwolf.mail;
 
-import com.dulno.mail.structure.MailDatabaseTable;
+import net.taskwolf.mail.structure.MailDatabaseTable;
 import com.google.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContextInitializer;

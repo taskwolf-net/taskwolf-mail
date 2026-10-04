@@ -1,26 +1,26 @@
-package com.dulno.mail;
+package net.taskwolf.mail;
 
-import com.dulno.core.database.DatabaseConnection;
-import com.dulno.core.database.DatabaseKeyspace;
-import com.dulno.mail.action.delete.MailDeleteAction;
-import com.dulno.mail.action.send.MailSendAction;
-import com.dulno.mail.select.MailComponentSelect;
-import com.dulno.mail.structure.MailDatabaseTable;
-import com.dulno.mail.trigger.MailCheckSchedule;
-import com.dulno.mail.trigger.receive.MailReceiveTrigger;
-import com.dulno.mail.trigger.sent.MailSentTrigger;
-import com.dulno.workflow.WorkflowModule;
-import com.dulno.workflow.integration.Integration;
+import net.taskwolf.core.database.DatabaseConnection;
+import net.taskwolf.core.database.DatabaseKeyspace;
+import net.taskwolf.mail.action.delete.MailDeleteAction;
+import net.taskwolf.mail.action.send.MailSendAction;
+import net.taskwolf.mail.select.MailComponentSelect;
+import net.taskwolf.mail.structure.MailDatabaseTable;
+import net.taskwolf.mail.trigger.MailCheckSchedule;
+import net.taskwolf.mail.trigger.receive.MailReceiveTrigger;
+import net.taskwolf.mail.trigger.sent.MailSentTrigger;
+import net.taskwolf.workflow.WorkflowModule;
+import net.taskwolf.workflow.integration.Integration;
 import com.google.common.collect.Lists;
 import com.google.inject.Injector;
-import com.dulno.core.account.AccountLink;
-import com.dulno.workflow.action.ActionRepository;
-import com.dulno.core.log.Log;
-import com.dulno.core.module.ModuleDescription;
-import com.dulno.core.module.ModuleInformation;
-import com.dulno.core.module.ModuleLoadPriority;
-import com.dulno.workflow.trigger.TriggerRepository;
-import com.dulno.workflow.component.input.InputComponentSelect;
+import net.taskwolf.core.account.AccountLink;
+import net.taskwolf.workflow.action.ActionRepository;
+import net.taskwolf.core.log.Log;
+import net.taskwolf.core.module.ModuleDescription;
+import net.taskwolf.core.module.ModuleInformation;
+import net.taskwolf.core.module.ModuleLoadPriority;
+import net.taskwolf.workflow.trigger.TriggerRepository;
+import net.taskwolf.workflow.component.input.InputComponentSelect;
 import org.springframework.boot.SpringApplication;
 
 @ModuleDescription(name = "mail", version = "1.0.0-SNAPSHOT",

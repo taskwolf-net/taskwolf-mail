@@ -1,9 +1,9 @@
-package com.dulno.mail;
+package net.taskwolf.mail;
 
-import com.dulno.core.account.AccountLinkEntry;
-import com.dulno.mail.structure.MailDatabaseTable;
+import net.taskwolf.core.account.AccountLinkEntry;
+import net.taskwolf.mail.structure.MailDatabaseTable;
 import lombok.RequiredArgsConstructor;
-import com.dulno.core.account.AccountLink;
+import net.taskwolf.core.account.AccountLink;
 
 import java.util.List;
 import java.util.UUID;

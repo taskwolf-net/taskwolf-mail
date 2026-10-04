@@ -1,5 +1,5 @@
 {
-  "mail.link.description": "Möchten Sie eine weitere Mail hinzufügen, um sie mit Hilfe von Dulno in Ihre Automatisierung zu integrieren? Klicken Sie einfach auf das Logo.",
+  "mail.link.description": "Möchten Sie eine weitere Mail hinzufügen, um sie mit Hilfe von Taskwolf in Ihre Automatisierung zu integrieren? Klicken Sie einfach auf das Logo.",
 
   "mail.trigger.receive.name": "E-Mail Empfangen",
   "mail.trigger.receive.description": "Wird ausgelöst, wenn Sie eine neue E-Mail erhalten",

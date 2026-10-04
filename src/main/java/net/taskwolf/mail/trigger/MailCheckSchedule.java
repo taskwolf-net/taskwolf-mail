@@ -1,10 +1,10 @@
-package com.dulno.mail.trigger;
+package net.taskwolf.mail.trigger;
 
-import com.dulno.core.iterator.AsyncIterator;
-import com.dulno.workflow.WorkflowModule;
-import com.dulno.workflow.trigger.TriggerEntry;
-import com.dulno.mail.structure.MailDatabaseTable;
-import com.dulno.mail.structure.MailEntry;
+import net.taskwolf.core.iterator.AsyncIterator;
+import net.taskwolf.workflow.WorkflowModule;
+import net.taskwolf.workflow.trigger.TriggerEntry;
+import net.taskwolf.mail.structure.MailDatabaseTable;
+import net.taskwolf.mail.structure.MailEntry;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -98,7 +98,7 @@ public final class MailCheckSchedule {
     return session;
   }
 
-  private static final Flags RECEIVE_FLAG = new Flags("DULNO-RECEIVE");
+  private static final Flags RECEIVE_FLAG = new Flags("TASKWOLF-RECEIVE");
 
   private List<Message> findReceivedMails(Folder inboxFolder) {
     try {
@@ -112,7 +112,7 @@ public final class MailCheckSchedule {
     }
   }
 
-  private static final Flags SENT_FLAG = new Flags("DULNO-SENT");
+  private static final Flags SENT_FLAG = new Flags("TASKWOLF-SENT");
 
   private List<Message> findSentMails(Folder sentFolder) {
     try {

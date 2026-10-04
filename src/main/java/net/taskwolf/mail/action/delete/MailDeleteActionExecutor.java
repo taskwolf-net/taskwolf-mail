@@ -1,10 +1,10 @@
-package com.dulno.mail.action.delete;
+package net.taskwolf.mail.action.delete;
 
-import com.dulno.workflow.action.ActionExecutor;
-import com.dulno.workflow.action.ActionResult;
-import com.dulno.workflow.placeholder.PlaceholderDissolve;
-import com.dulno.mail.structure.MailDatabaseTable;
-import com.dulno.mail.structure.MailEntry;
+import net.taskwolf.workflow.action.ActionExecutor;
+import net.taskwolf.workflow.action.ActionResult;
+import net.taskwolf.workflow.placeholder.PlaceholderDissolve;
+import net.taskwolf.mail.structure.MailDatabaseTable;
+import net.taskwolf.mail.structure.MailEntry;
 import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 

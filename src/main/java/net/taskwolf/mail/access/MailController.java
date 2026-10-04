@@ -1,14 +1,14 @@
-package com.dulno.mail.access;
+package net.taskwolf.mail.access;
 
 
-import com.dulno.core.access.DulnoRequestBody;
-import com.dulno.core.access.DulnoRestController;
-import com.dulno.core.organization.team.TeamTargetDatabaseTable;
-import com.dulno.core.user.User;
-import com.dulno.core.user.UserDatabaseTable;
-import com.dulno.core.user.UserTargetDatabaseTable;
-import com.dulno.mail.structure.MailDatabaseTable;
-import com.dulno.mail.structure.MailEntry;
+import net.taskwolf.core.access.TaskwolfRequestBody;
+import net.taskwolf.core.access.TaskwolfRestController;
+import net.taskwolf.core.organization.team.TeamTargetDatabaseTable;
+import net.taskwolf.core.user.User;
+import net.taskwolf.core.user.UserDatabaseTable;
+import net.taskwolf.core.user.UserTargetDatabaseTable;
+import net.taskwolf.mail.structure.MailDatabaseTable;
+import net.taskwolf.mail.structure.MailEntry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +25,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-public class MailController extends DulnoRestController {
+public class MailController extends TaskwolfRestController {
   private final MailDatabaseTable mailDatabaseTable;
   private final UserTargetDatabaseTable userTargetDatabaseTable;
   private final TeamTargetDatabaseTable teamTargetDatabaseTable;
@@ -47,7 +47,7 @@ public class MailController extends DulnoRestController {
     HttpServletRequest request, @RequestBody String payload,
     HttpServletResponse response
   ) {
-    var body = DulnoRequestBody.of(payload, response);
+    var body = TaskwolfRequestBody.of(payload, response);
     var domain = body.getString("domain");
     return findUser(request)
       .thenCompose(user -> userTargetDatabaseTable.findTargetSecured(user.id())
@@ -82,8 +82,8 @@ public class MailController extends DulnoRestController {
         .thenApply(value -> Map.of("success", true)));
   }
 
-  private static final Flags RECEIVE_FLAG = new Flags("DULNO-RECEIVE");
-  private static final Flags SENT_FLAG = new Flags("DULNO-SENT");
+  private static final Flags RECEIVE_FLAG = new Flags("TASKWOLF-RECEIVE");
+  private static final Flags SENT_FLAG = new Flags("TASKWOLF-SENT");
 
   private void setupMail(MailEntry mail) {
     try {
