@@ -1,6 +1,6 @@
 plugins {
   id("java")
-  id("io.freefair.lombok") version "9.8.0"
+  id("io.freefair.lombok") version "9.8.2"
 }
 
 group = "net.taskwolf"
@@ -34,7 +34,7 @@ dependencies {
   compileOnly("org.json:json:20260814")
   compileOnly("commons-io:commons-io:2.22.0")
 
-  compileOnly("org.springframework.boot:spring-boot-starter-web:4.1.1")
+  compileOnly("org.springframework.boot:spring-boot-starter-web:4.1.2")
 
   implementation("com.sun.mail:javax.mail:1.6.2")
 }
